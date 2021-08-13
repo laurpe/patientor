@@ -9,10 +9,10 @@ import GenderIcon from './GenderIcon';
 
 const PatientPage = () => {
     const {id} = useParams<{id: string}>();
-    const [{patients}, dispatch] = useStateValue();
+    const [state, dispatch] = useStateValue();
 
     React.useEffect(() => {
-        if (patients[id] && patients[id].ssn) {
+        if (state.patients[id] && state.patients[id].ssn) {
             return;
         }
         const fetchPatient = async () => {
@@ -24,35 +24,32 @@ const PatientPage = () => {
             }
         };
         void fetchPatient();
-    }, [id, dispatch, patients]);
+    }, [id, dispatch, state.patients]);
 
     return (
         <div>
-            {patients[id] &&
+            {state.patients[id] &&
             <div>
-                <h2>{patients[id].name} <GenderIcon gender={patients[id].gender}/></h2>
+                <h2>{state.patients[id].name} <GenderIcon gender={state.patients[id].gender}/></h2>
                 <div>
-                    ssn: {patients[id].ssn}
+                    ssn: {state.patients[id].ssn}
                 </div>
                 <div>
-                    occupation: {patients[id].occupation}
+                    occupation: {state.patients[id].occupation}
                 </div>
                 <h3>Entries</h3>
                 <div>
-                    {patients[id].entries.map(entry => {
+                    {state.patients[id].entries.map(entry => {
                         if (entry.diagnosisCodes !== undefined) {
+
                             return (
-                                <div>
-                                    <div>
-                                        {entry.date} {entry.description}
-                                    </div>
-                                    <div>
-                                        <ul>
+                                <div key={entry.id}>
+                                    {entry.date} {entry.description}
+                                    <ul>
                                         {entry.diagnosisCodes.map(code => (
-                                        <li key={code}>{code}</li>
+                                        <li key={code}>{code} {state.diagnoses.find(item => item.code === code)?.name}</li>
                                         ))}
-                                        </ul>
-                                    </div>
+                                    </ul>
                                 </div>
                             ); 
                         }
