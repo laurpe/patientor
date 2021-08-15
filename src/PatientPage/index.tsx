@@ -5,6 +5,7 @@ import { apiBaseUrl } from '../constants';
 import { useStateValue, updatePatient } from "../state";
 import {Patient} from '../types';
 import GenderIcon from './GenderIcon';
+import EntryDetails from './EntryDetails';
 
 
 const PatientPage = () => {
@@ -38,28 +39,7 @@ const PatientPage = () => {
                     occupation: {state.patients[id].occupation}
                 </div>
                 <h3>Entries</h3>
-                <div>
-                    {state.patients[id].entries.map(entry => {
-                        if (entry.diagnosisCodes !== undefined) {
-
-                            return (
-                                <div key={entry.id}>
-                                    {entry.date} {entry.description}
-                                    <ul>
-                                        {entry.diagnosisCodes.map(code => (
-                                        <li key={code}>{code} {state.diagnoses.find(item => item.code === code)?.name}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            ); 
-                        }
-                        return (
-                            <div key={entry.id}>
-                                {entry.date} {entry.description}
-                            </div>
-                        );                       
-                    })}
-                </div>
+                {state.patients[id].entries.map(entry => <EntryDetails key={entry.id} entry={entry}/>)}
             </div>
             }
         </div>
