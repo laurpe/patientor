@@ -2,15 +2,41 @@ import axios from 'axios';
 import React from 'react';
 import {useParams} from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
-import { useStateValue, updatePatient } from "../state";
-import {Patient} from '../types';
+import { useStateValue, addEntry, updatePatient } from "../state";
+import {Entry, NewEntry, Patient} from '../types';
 import GenderIcon from './GenderIcon';
 import EntryDetails from './EntryDetails';
+import AddEntryModal from '../AddEntryModal';
+import {Button } from "semantic-ui-react";
 
 
 const PatientPage = () => {
     const {id} = useParams<{id: string}>();
     const [state, dispatch] = useStateValue();
+    const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<string | undefined>();
+
+    const openModal = (): void => setModalOpen(true);
+
+    const closeModal = (): void => {
+        setModalOpen(false);
+        setError(undefined);
+    };
+  
+    const submitNewEntry = async (values: NewEntry) => {
+      try {
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          values
+        );
+        
+        dispatch(addEntry(id, newEntry));
+        closeModal();
+      } catch (e) {
+        console.error(e.response?.data || 'Unknown Error');
+        setError(e.response?.data || 'Unknown error');
+      }
+    };
 
     React.useEffect(() => {
         if (state.patients[id] && state.patients[id].ssn) {
@@ -42,6 +68,12 @@ const PatientPage = () => {
                 {state.patients[id].entries.map(entry => <EntryDetails key={entry.id} entry={entry}/>)}
             </div>
             }
+            <AddEntryModal
+                modalOpen={modalOpen}
+                onSubmit={submitNewEntry}
+                error={error}
+                onClose={closeModal} />
+            <Button onClick={() => openModal()}>Add New Entry</Button>
         </div>
     ); 
 };
