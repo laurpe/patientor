@@ -64,3 +64,7 @@ type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit
 export type NewEntry = UnionOmit<Entry, 'id'>;
 
 export type NewHealthCheckEntry = UnionOmit<HealthCheckEntry, 'id'>;
+
+export type NewOccupationalHealthcareEntry = UnionOmit<OccupationalHealthcareEntry, 'id'>;
+
+export type NewHospitalEntry = UnionOmit<HospitalEntry, 'id'>;

@@ -15,8 +15,12 @@ const PatientPage = () => {
     const [state, dispatch] = useStateValue();
     const [modalOpen, setModalOpen] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string | undefined>();
+    const [entryType, setEntryType] = React.useState<string>("");
 
-    const openModal = (): void => setModalOpen(true);
+    const openModal = (entryType: string): void => {
+        setModalOpen(true);
+        setEntryType(entryType);
+    };
 
     const closeModal = (): void => {
         setModalOpen(false);
@@ -72,8 +76,12 @@ const PatientPage = () => {
                 modalOpen={modalOpen}
                 onSubmit={submitNewEntry}
                 error={error}
-                onClose={closeModal} />
-            <Button onClick={() => openModal()}>Add New Entry</Button>
+                onClose={closeModal}
+                entryType={entryType}
+            />
+            <Button onClick={() => openModal("Health Check")}>Add New Health Check Entry</Button>
+            <Button onClick={() => openModal("Occupational Healthcare")}>Add New Occupational Healthcare Entry</Button>
+            <Button onClick={() => openModal("Hospital")}>Add New Hospital Entry</Button>
         </div>
     ); 
 };
